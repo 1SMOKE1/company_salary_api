@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import { IPositionEntity } from "./interfaces/IPosition";
 
-@Entity()
+@Entity({name: 'positions'})
 export class PositionEntity implements IPositionEntity{
 
   @PrimaryGeneratedColumn()
@@ -10,7 +10,7 @@ export class PositionEntity implements IPositionEntity{
   @Column()
   name: string;
 
-  @Column()
+  @Column({type: "int"})
   supervisor_access: boolean;
   
 }

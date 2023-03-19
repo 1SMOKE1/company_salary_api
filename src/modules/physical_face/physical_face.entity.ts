@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm';
 import { EGender, IPhysicalFaceEntity } from './interfaces/IPhysicalFace';
 
-@Entity('physical_faces')
+@Entity({name: 'physical_faces'})
+@Index(["inn"], {unique: true})
 export class PhysicalFaceEntity implements IPhysicalFaceEntity{
   
   @PrimaryGeneratedColumn({type: "integer"})

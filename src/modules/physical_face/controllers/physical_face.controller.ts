@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Res } from '@nestjs/common';
 import { PhysicalFaceService } from '../services/physical_face.service';
 import { Response } from 'express';
-import { CreatePhysicalFaceDto } from '../dtos/CreatePhysicalFace.dto';
+import { CreatePhysicalFaceDto } from '../dtos/create-physical_face.dto';
 import { ParseIntPipe } from '@nestjs/common/pipes';
-import { UpdatePhysicalFaceDto } from '../dtos/UpdatePhysicalFace.dto';
+import { UpdatePhysicalFaceDto } from '../dtos/update-physical_face.dto';
+import { getErrorMessage } from 'src/utils/getErrorMessage';
 
 @Controller('physical-faces')
 export class PhysicalFaceController {
@@ -41,9 +42,9 @@ export class PhysicalFaceController {
     @Res() res: Response){
     try{
       const newPhysicalFace = await this.physicalFaceService.addOne(createPhysicalFaceDto);
-      res.status(200).json(newPhysicalFace)
+      return res.status(200).json(newPhysicalFace)
     } catch (err) {
-      res.status(500).json(err);
+      throw new HttpException(getErrorMessage(err), HttpStatus.CONFLICT);
     }
   }
 
@@ -69,7 +70,7 @@ export class PhysicalFaceController {
   ){
     try {
       const deletedPhysicalFace = await this.physicalFaceService.deleteOne(id)
-      .then(async () => ({response: await this.physicalFaceService.getOne(id), message: `Deleted item by id: ${id}`}))
+      .then(() => ({message: `Deleted item by id: ${id}`}))
       return res.status(HttpStatus.OK).json(deletedPhysicalFace)
     } catch (err) {
       return res.status(500).json(err);

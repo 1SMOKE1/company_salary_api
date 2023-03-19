@@ -8,6 +8,10 @@ import { PersonalModule } from './modules/personal/personal.module';
 import { PositionModule } from './modules/position/position.module';
 import { SubunitModule } from './modules/subunit/subunit.module';
 import { PhysicalFaceEntity } from './modules/physical_face/physical_face.entity';
+import { PositionEntity } from './modules/position/position.entity';
+import { PersonalEntity } from './modules/personal/personal.entity';
+import { SubunitEntity } from './modules/subunit/subunit.entity';
+
 
 
 
@@ -22,9 +26,11 @@ import { PhysicalFaceEntity } from './modules/physical_face/physical_face.entity
         type: 'sqlite',
         database: `src/db/${configService.get('DB__NAME')}.db`,
         entities: [
-          PhysicalFaceEntity
+          PhysicalFaceEntity,
+          PositionEntity,
+          PersonalEntity,
+          SubunitEntity
         ],
-        // entities: [__dirname + "/**/*.entity.{ts,js}"],
         synchronize: true,
         migrations: []
       })

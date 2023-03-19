@@ -7,6 +7,7 @@ import { PhysicalFaceController } from './controllers/physical_face.controller';
 @Module({
   imports: [TypeOrmModule.forFeature([PhysicalFaceEntity])],
   providers: [PhysicalFaceService],
-  controllers: [PhysicalFaceController]
+  controllers: [PhysicalFaceController],
+  exports: [TypeOrmModule.forFeature([PhysicalFaceEntity])]
 })
 export class PhysicalFaceModule {}

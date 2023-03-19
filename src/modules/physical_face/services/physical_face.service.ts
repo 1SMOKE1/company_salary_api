@@ -13,19 +13,30 @@ export class PhysicalFaceService {
     private physicalFaceRepository: Repository<PhysicalFaceEntity>,
   ){}
 
-  async getAll(): Promise<PhysicalFaceEntity[]>{
+  async getAll(){
     return await this.physicalFaceRepository.find();
   }
 
-  async getOne(id: number): Promise<PhysicalFaceEntity>{
-    return await this.getAll()
-    .then((data: PhysicalFaceEntity[]) => (
-      data.find((el: PhysicalFaceEntity): boolean => el.id === id)))
+  async getOne(id: number){
+    return await this.physicalFaceRepository.find({where: {id}})
   }
 
-  async addOne(body: ICreatePhysicalFaceDto): Promise<PhysicalFaceEntity>{
-    const newPhysicalFace = this.physicalFaceRepository.create({...body});
-    return await this.physicalFaceRepository.save(newPhysicalFace);
+  async addOne(body: ICreatePhysicalFaceDto){
+    try{
+      const newPhysicalFace = this.physicalFaceRepository.create({...body});
+      return await this.physicalFaceRepository.save(newPhysicalFace);
+    } catch (err) {
+      if(err.errno === 19){
+        throw new Error('Physical_face with current inn already exists')
+      }
+    } 
+  }
+
+  async getOneByCond(field: string, cond: any){
+    return await this.physicalFaceRepository.find({where: {
+        [field]: cond
+      }
+    })
   }
 
   async updateOne(id: number, body: IUpdatePhysicalFaceDto){
