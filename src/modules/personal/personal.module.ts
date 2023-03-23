@@ -3,11 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PersonalEntity } from './personal.entity';
 import { PersonalService } from './services/personal.service';
 import { PersonalController } from './controllers/personal.controller';
-import { PositionService } from '../position/services/position.service';
 import { PositionModule } from '../position/position.module';
 import { PhysicalFaceModule } from '../physical_face/physical_face.module';
-import { PhysicalFaceService } from '../physical_face/services/physical_face.service';
-import { SubunitService } from '../subunit/services/subunit.service';
 import { SubunitModule } from '../subunit/subunit.module';
 
 @Module({
@@ -19,12 +16,10 @@ import { SubunitModule } from '../subunit/subunit.module';
   ],
   providers: [
     PersonalService,
-    PositionService,
-    PhysicalFaceService,
-    SubunitService
   ],
   controllers: [
     PersonalController
-  ]
+  ],
+  exports: [TypeOrmModule.forFeature([PersonalEntity])]
 })
 export class PersonalModule {}

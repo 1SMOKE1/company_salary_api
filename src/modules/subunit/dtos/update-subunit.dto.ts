@@ -1,11 +1,10 @@
-import { TGroupLevel } from "../interfaces/ISubunit";
+import { IPersonalEntity } from "src/modules/personal/interfaces/IPersonal";
 import { IUpdateSubunitDto } from "../interfaces/IUpdateSubunitDto";
 
 export class UpdateSubunitDto implements IUpdateSubunitDto{
   id!: number;
   name: string;
-  supervisor_id?: number;
-  supervisor_name?: string;
-  group_id?: number;
-  group_level: TGroupLevel;
+  supervisor?: IPersonalEntity | null;
+  supervisor_inn?: number;
+  parent_subunit_id?: number | null;
 }

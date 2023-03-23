@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
 import { Response } from 'express';
+import { getErrorMessage } from 'src/utils/getErrorMessage';
 import { CreateSubunitDto } from '../dtos/create-subunit.dto';
 import { UpdateSubunitDto } from '../dtos/update-subunit.dto';
 import { SubunitService } from '../services/subunit.service';
@@ -45,8 +46,7 @@ export class SubunitController {
       const newSubunit = await this.subunitService.createOne(subunit);
       return res.status(HttpStatus.OK).json(newSubunit);
     } catch (err) {
-      console.log(err);
-      return res.status(500).json(err);
+      throw new HttpException(getErrorMessage(err), HttpStatus.FORBIDDEN)
     }
   }
 
@@ -61,7 +61,7 @@ export class SubunitController {
       .then(() => this.subunitService.getOne(id));
       return res.status(HttpStatus.OK).json(updatedSubunit);
     } catch (err) {
-      return res.status(500).json(err);
+      throw new HttpException(getErrorMessage(err), HttpStatus.FORBIDDEN)
     }
   }
 
@@ -72,10 +72,9 @@ export class SubunitController {
   ){
     try{
       const deletedSubunit = await this.subunitService.deleteOne(id)
-      .then(() => this.subunitService.getOne(id));
       return res.status(HttpStatus.OK).json(deletedSubunit);
     } catch (err) {
-      return res.status(500).json(err);
+      throw new HttpException(getErrorMessage(err), HttpStatus.FORBIDDEN)
     }
   }
 

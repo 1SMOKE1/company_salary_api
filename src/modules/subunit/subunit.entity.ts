@@ -1,7 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-import { ISubunitEntity, TGroupLevel } from "./interfaces/ISubunit";
+import { Entity, PrimaryGeneratedColumn, Column, Index, ManyToOne} from "typeorm";
+import { IPersonalEntity } from "../personal/interfaces/IPersonal";
+import { PersonalEntity } from "../personal/personal.entity";
+import { ISubunitEntity } from "./interfaces/ISubunit";
 
 @Entity({name: 'subunits'})
+@Index(["supervisor_inn"], {unique: true})
 export class SubunitEntity implements ISubunitEntity{
 
   @PrimaryGeneratedColumn({type: "integer"})
@@ -10,16 +13,18 @@ export class SubunitEntity implements ISubunitEntity{
   @Column({type: "text", length: 100})
   name: string;
 
-  @Column({type: "bigint", nullable: true})
-  supervisor_id?: number;
+  @ManyToOne(() => PersonalEntity, (person) => person, {
+    nullable: true
+  })
+  supervisor?: IPersonalEntity | null;
+  
+  @Column({type: "integer", nullable: true})
+  supervisor_inn?: number;
 
-  @Column({type: "text", length: 100, nullable: true})
-  supervisor_name?: string;
-
-  @Column({type: "bigint", nullable: true})
-  group_id?: number;
-
-  @Column({type: "int", default: 0, nullable: true})
-  group_level: TGroupLevel;
-
+  @Column({type: "integer", nullable: true})
+  parent_subunit_id?: number | null;
 }
+
+
+
+

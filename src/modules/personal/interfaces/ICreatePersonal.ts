@@ -1,5 +1,3 @@
-
-
 export interface ICreatePersonalDto{
   id: number,
   position_name: string,

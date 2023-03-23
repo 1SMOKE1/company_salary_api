@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne } from 'typeorm';
 import { PhysicalFaceEntity } from '../physical_face/physical_face.entity';
+import { IPositionEntity } from '../position/interfaces/IPosition';
 import { PositionEntity } from '../position/position.entity';
 import { SubunitEntity } from '../subunit/subunit.entity';
 import { IPersonalEntity } from './interfaces/IPersonal';
@@ -10,15 +11,10 @@ export class PersonalEntity implements IPersonalEntity{
   @PrimaryGeneratedColumn({type: "integer"})
   id!: number;
 
-  @Column({type: "text", length: 100})
-  name: string;
+  @ManyToOne(() => PositionEntity, ({name}) => name)
+  position: IPositionEntity;
 
-  @OneToOne(() => PositionEntity)
-  @JoinColumn()
-  position: PositionEntity;
-
-  @OneToOne(() => SubunitEntity)
-  @JoinColumn()
+  @ManyToOne(() => SubunitEntity)
   subunit: SubunitEntity;
 
   @Column({type: "integer", default: 500}, )
@@ -32,3 +28,6 @@ export class PersonalEntity implements IPersonalEntity{
   begin_date: Date;
   
 }
+
+
+

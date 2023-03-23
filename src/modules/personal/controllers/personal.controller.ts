@@ -1,7 +1,8 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { getErrorMessage } from 'src/utils/getErrorMessage';
-import { ICreatePersonalDto } from '../interfaces/ICreatePersonal';
+import { CreatePersonalDto } from '../dtos/create-personal.dto';
+import { UpdatePersonalDto } from '../dtos/update-personal.dto';
 import { PersonalService } from '../services/personal.service';
 
 @Controller('personal')
@@ -38,14 +39,42 @@ export class PersonalController {
 
   @Post()
   async createOne(
-    @Body() persona: ICreatePersonalDto,
+    @Body() person: CreatePersonalDto,
     @Res() res: Response
   ){
     try{
-      const newPersona = await this.personalService.createOne(persona);
-      return res.status(HttpStatus.OK).json(newPersona);
+      const newPerson = await this.personalService.createOne(person);
+      return res.status(HttpStatus.OK).json(newPerson);
     } catch (err) {
       throw new HttpException(getErrorMessage(err), HttpStatus.FORBIDDEN);
+    }
+  }
+
+  @Put(':id')
+  async updateOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() person: UpdatePersonalDto,
+    @Res() res: Response
+  ){
+    try{
+      const updatedPerson = await this.personalService.updateOne(id, person)
+      .then(() => this.personalService.getOne(id))
+      return res.status(HttpStatus.OK).json(updatedPerson)
+    } catch (err) {
+      throw new HttpException(getErrorMessage(err), HttpStatus.FORBIDDEN)
+    }
+  }
+
+  @Delete(':id')
+  async deleteOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Res() res: Response
+  ){
+    try {
+      const deletedPerson = await this.personalService.deleteOne(id)
+      res.status(HttpStatus.OK).json(deletedPerson);
+    } catch (err) {
+      throw new HttpException(getErrorMessage(err), HttpStatus.FORBIDDEN)
     }
   }
 

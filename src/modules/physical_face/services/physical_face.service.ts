@@ -32,13 +32,6 @@ export class PhysicalFaceService {
     } 
   }
 
-  async getOneByCond(field: string, cond: any){
-    return await this.physicalFaceRepository.find({where: {
-        [field]: cond
-      }
-    })
-  }
-
   async updateOne(id: number, body: IUpdatePhysicalFaceDto){
     return await this.physicalFaceRepository.update({id}, {...body});
   }

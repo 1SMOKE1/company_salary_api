@@ -1,11 +1,10 @@
 import { PhysicalFaceEntity } from "src/modules/physical_face/physical_face.entity";
-import { PositionEntity } from "src/modules/position/position.entity";
+import { IPositionEntity } from "src/modules/position/interfaces/IPosition";
 import { SubunitEntity } from "src/modules/subunit/subunit.entity";
 
 export interface IPersonalEntity{
   id: number,
-  name: string,
-  position: PositionEntity,
+  position: IPositionEntity,
   subunit: SubunitEntity,
   salary: number,
   physical_face: PhysicalFaceEntity,

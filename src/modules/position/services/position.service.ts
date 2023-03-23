@@ -21,13 +21,6 @@ export class PositionService {
   async getOne(id: number){
     return await this.positionRepository.find({where: {id}});
   }
-
-  async getOneByCond(field: string, cond: any){
-    return await this.positionRepository.find({where: {
-        [field]: cond
-      }
-    })
-  }
   
   async addOne(body: ICreatePositionDto){
     const newPosition = this.positionRepository.create({...body});
