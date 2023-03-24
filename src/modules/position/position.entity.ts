@@ -23,7 +23,4 @@ export class PositionEntity implements IPositionEntity {
 
   @ManyToOne(() => SalarybonusEntity)
   salary_bonus: ISalarybonus;
-
-  @Column({ type: 'text', nullable: true })
-  salary_bonus_name?: string | null;
 }

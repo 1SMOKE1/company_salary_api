@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Res } from '@nestjs/common';
 import { ParseIntPipe } from '@nestjs/common/pipes';
 import { Response } from 'express';
 import { getErrorMessage } from 'src/utils/getErrorMessage';
@@ -61,6 +61,19 @@ export class PositionController {
       const updatedPosition = await this.positionService.updateOne(id, position)
       .then(() => this.positionService.getOne(id))
       return res.status(HttpStatus.OK).json(updatedPosition)
+    } catch (err) {
+      throw new HttpException(getErrorMessage(err), HttpStatus.CONFLICT)
+    }
+  }
+
+  @Delete(':id')
+  async deleteOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Res() res: Response
+  ){
+    try{
+      const deletedPosition = await this.positionService.deleteOne(id);
+      return res.status(HttpStatus.OK).json(deletedPosition);
     } catch (err) {
       throw new HttpException(getErrorMessage(err), HttpStatus.CONFLICT)
     }

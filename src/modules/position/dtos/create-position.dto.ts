@@ -4,5 +4,5 @@ export class CreatePositionDto {
   name: string;
   supervisor_access: boolean;
   salary_bonus: ISalarybonus;
-  salary_bonus_name?: string | null;
+  salary_bonus_name?: string;
 }

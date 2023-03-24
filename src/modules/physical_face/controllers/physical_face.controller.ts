@@ -56,7 +56,7 @@ export class PhysicalFaceController {
   ){
     try{
       const updatedPhysicalFace = await this.physicalFaceService.updateOne(id, updatePhysicalFaceDto)
-      .then(async () => ({response: await this.physicalFaceService.getOne(id), message: `Updated item by id: ${id}`}))
+      .then(() => this.physicalFaceService.getOne(id))
       return res.status(HttpStatus.OK).json(updatedPhysicalFace);
     } catch (err) {
       return res.status(500).json(err);

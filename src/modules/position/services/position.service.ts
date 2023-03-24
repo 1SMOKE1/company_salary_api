@@ -24,9 +24,6 @@ export class PositionService {
           salary_bonus: true,
         },
       })
-      .then((items) =>
-        items.map(({ salary_bonus_name, ...item }: IPositionEntity) => item),
-      );
   }
 
   async getOne(id: number) {
@@ -37,11 +34,10 @@ export class PositionService {
         },
         where: { id },
       })
-      .then(({ salary_bonus_name, ...item }: IPositionEntity) => item);
   }
 
   async addOne(body: CreatePositionDto) {
-    const { salary_bonus_name } = body;
+    const { salary_bonus_name, name, supervisor_access } = body;
 
     const newPositionBody: IPositionEntity = new PositionEntity();
 
@@ -61,8 +57,12 @@ export class PositionService {
           );
         }
       }
+      newPositionBody.name = name;
+      newPositionBody.supervisor_access = supervisor_access;
 
-      const newPosition = this.positionRepository.create(newPositionBody,);
+      console.log(newPositionBody)
+
+      const newPosition = this.positionRepository.create(newPositionBody);
       return await this.positionRepository.save(newPosition);
     } catch (err) {
       throw err;
@@ -70,7 +70,7 @@ export class PositionService {
   }
 
   async updateOne(id: number, body: UpdatePositionDto) {
-    const { salary_bonus_name } = body;
+    const { salary_bonus_name, name, supervisor_access } = body;
 
     const updatedPositionBody: IPositionEntity = new PositionEntity();
 
@@ -91,6 +91,9 @@ export class PositionService {
         }
       }
 
+      updatedPositionBody.name = name;
+      updatedPositionBody.supervisor_access = supervisor_access;
+
       return await this.positionRepository.update(
         { id },
         {...updatedPositionBody},
@@ -98,5 +101,9 @@ export class PositionService {
     } catch (err) {
       throw err;
     }
+  }
+
+  async deleteOne(id: number){
+    return this.positionRepository.delete({id})
   }
 }
