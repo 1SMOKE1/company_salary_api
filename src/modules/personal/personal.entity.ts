@@ -24,7 +24,7 @@ export class PersonalEntity implements IPersonalEntity{
   @JoinColumn()
   physical_face: PhysicalFaceEntity;
 
-  @Column({type: "text", default: new Date().toLocaleString()})
+  @Column({type: "text", default: new Date().toLocaleString().split(',')[0]})
   begin_date: Date;
   
 }

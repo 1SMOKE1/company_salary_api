@@ -9,7 +9,7 @@ import { PersonalModule } from '../personal/personal.module';
 
 @Module({
   imports: [
-    forwardRef(() => PersonalModule),,
+    forwardRef(() => PersonalModule),
     TypeOrmModule.forFeature([SubunitEntity])],
   providers: [SubunitService],
   controllers: [SubunitController],

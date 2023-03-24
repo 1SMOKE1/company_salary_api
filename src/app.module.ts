@@ -11,9 +11,8 @@ import { PhysicalFaceEntity } from './modules/physical_face/physical_face.entity
 import { PositionEntity } from './modules/position/position.entity';
 import { PersonalEntity } from './modules/personal/personal.entity';
 import { SubunitEntity } from './modules/subunit/subunit.entity';
-
-
-
+import { SalarybonusesModule } from './modules/salary_bonuses/salary-bonuses.module';
+import { SalarybonusEntity } from './modules/salary_bonuses/salary-bonuses.entity';
 
 @Module({
   imports: [
@@ -29,16 +28,18 @@ import { SubunitEntity } from './modules/subunit/subunit.entity';
           PhysicalFaceEntity,
           PositionEntity,
           PersonalEntity,
-          SubunitEntity
+          SubunitEntity,
+          SalarybonusEntity
         ],
         synchronize: true,
-        migrations: []
-      })
+        migrations: [],
+      }),
     }),
     PhysicalFaceModule,
     PersonalModule,
     PositionModule,
     SubunitModule,
+    SalarybonusesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

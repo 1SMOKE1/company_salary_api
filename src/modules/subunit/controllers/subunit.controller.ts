@@ -58,7 +58,7 @@ export class SubunitController {
   ){
     try{  
       const updatedSubunit = await this.subunitService.updateOne(id, subunit)
-      .then(() => this.subunitService.getOne(id));
+      .then(async () => await this.subunitService.getOne(id));
       return res.status(HttpStatus.OK).json(updatedSubunit);
     } catch (err) {
       throw new HttpException(getErrorMessage(err), HttpStatus.FORBIDDEN)

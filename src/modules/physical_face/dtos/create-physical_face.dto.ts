@@ -1,8 +1,8 @@
-import { EGender, IPhysicalFaceModel } from "../interfaces/IPhysicalFace";
+import { EGender } from "../interfaces/IPhysicalFace";
 
 
 
-export class CreatePhysicalFaceDto implements IPhysicalFaceModel{
+export class CreatePhysicalFaceDto{
   id: number;
   name: string;
   inn: number;

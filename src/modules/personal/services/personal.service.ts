@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PersonalEntity } from '../personal.entity';
 import { Repository } from 'typeorm'; 
-import { ICreatePersonalDto } from '../interfaces/ICreatePersonal';
 import { IPositionEntity } from 'src/modules/position/interfaces/IPosition';
 import { IPhysicalFaceEntity } from 'src/modules/physical_face/interfaces/IPhysicalFace';
 import { ISubunitEntity } from 'src/modules/subunit/interfaces/ISubunit';
@@ -10,7 +9,9 @@ import { IPersonalEntity } from '../interfaces/IPersonal';
 import { PositionEntity } from 'src/modules/position/position.entity';
 import { PhysicalFaceEntity } from 'src/modules/physical_face/physical_face.entity';
 import { SubunitEntity } from 'src/modules/subunit/subunit.entity';
-import { IUpdatePersonalDto } from '../interfaces/IUpdatePersonal';
+import { CreatePersonalDto } from '../dtos/create-personal.dto';
+import { UpdatePersonalDto } from '../dtos/update-personal.dto';
+
 
 
 
@@ -37,7 +38,7 @@ export class PersonalService {
         physical_face: true,
         subunit: true,
         position: true
-      },
+      }, 
     })
   }
 
@@ -49,22 +50,20 @@ export class PersonalService {
     }});
   }
 
-  async createOne(body: ICreatePersonalDto){
+  async createOne(body: CreatePersonalDto){
 
-    const {physical_face_inn, position_name, subunit_name, salary} = body;
+    const {physical_face_inn, position_name, subunit_name} = body;
 
     const newPerson: IPersonalEntity = new PersonalEntity();
     
     try{
 
-      const physicalFace: IPhysicalFaceEntity = await this.physicalFaceRepository.find({where: {inn: physical_face_inn}})
-      .then(([physicalFace]: IPhysicalFaceEntity[]): IPhysicalFaceEntity => physicalFace);
+      const physicalFace: IPhysicalFaceEntity = await this.physicalFaceRepository.findOne({where: {inn: physical_face_inn}})
 
-      const position: IPositionEntity = await this.positionRepository.find({where: {name: position_name}})
-      .then(([position]: IPositionEntity[]): IPositionEntity => position);
+      const position: IPositionEntity = await this.positionRepository.findOne({where: {name: position_name}})
       
-      const subunit: ISubunitEntity = await this.subunitRepository.find({where: {name: subunit_name}})
-      .then(([subunit]: ISubunitEntity[]): ISubunitEntity => subunit);
+      const subunit: ISubunitEntity = await this.subunitRepository.findOne({where: {name: subunit_name}})
+
         if(physicalFace){
           if(physicalFace.inn === physical_face_inn){
             newPerson.physical_face = physicalFace;
@@ -74,7 +73,7 @@ export class PersonalService {
         }
 
         if(subunit){
-          newPerson.subunit = subunit;
+          // newPerson.subunit = subunit;
         } else {
           throw new Error (`Subunit_name with name: ${subunit_name}, doesn\'t exists. Create it or write another one subunit_name`)
         }
@@ -89,16 +88,13 @@ export class PersonalService {
           throw new Error(errorMessage)
         }
 
-        if(salary){
-          newPerson.salary = salary;
-        }
       return await this.personalRepository.save(newPerson);
     } catch (err) {
       throw err
     }
   }
 
-  async updateOne(id: number, body: IUpdatePersonalDto){
+  async updateOne(id: number, body: UpdatePersonalDto){
     try {
 
 
@@ -123,7 +119,7 @@ export class PersonalService {
         }
 
         if(subunit){
-          updatedPerson.subunit = subunit;
+          // updatedPerson.subunit = subunit;
         } else {
           throw new Error (`Subunit_name with name: ${subunit_name}, doesn\'t exists. Create it or write another one subunit_name`)
         }

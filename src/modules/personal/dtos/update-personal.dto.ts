@@ -1,6 +1,6 @@
-import { IUpdatePersonalDto } from "../interfaces/IUpdatePersonal";
 
-export class UpdatePersonalDto implements IUpdatePersonalDto{
+
+export class UpdatePersonalDto{
   id: number;
   name: string;
   subunit_name: string;

@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PhysicalFaceEntity } from '../physical_face.entity';
 import { Repository } from 'typeorm';
-import { IUpdatePhysicalFaceDto } from '../interfaces/IUpdatePhysicalFaceDto';
-import { ICreatePhysicalFaceDto } from '../interfaces/ICreatePhysicalFaceDto'; 
+import { CreatePhysicalFaceDto } from '../dtos/create-physical_face.dto';
+import { UpdatePhysicalFaceDto } from '../dtos/update-physical_face.dto';
 
 @Injectable()
 export class PhysicalFaceService {
@@ -21,7 +21,7 @@ export class PhysicalFaceService {
     return await this.physicalFaceRepository.find({where: {id}})
   }
 
-  async addOne(body: ICreatePhysicalFaceDto){
+  async addOne(body: CreatePhysicalFaceDto){
     try{
       const newPhysicalFace = this.physicalFaceRepository.create({...body});
       return await this.physicalFaceRepository.save(newPhysicalFace);
@@ -32,7 +32,7 @@ export class PhysicalFaceService {
     } 
   }
 
-  async updateOne(id: number, body: IUpdatePhysicalFaceDto){
+  async updateOne(id: number, body: UpdatePhysicalFaceDto){
     return await this.physicalFaceRepository.update({id}, {...body});
   }
 

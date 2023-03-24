@@ -20,7 +20,7 @@ export class PersonalController {
       const personal = await this.personalService.getAll();
       return res.status(HttpStatus.OK).json(personal);
     } catch (err) {
-      return res.status(500).json(err);
+      throw new HttpException(getErrorMessage(err), HttpStatus.FORBIDDEN);
     }
   }
 
@@ -33,7 +33,7 @@ export class PersonalController {
       const person = await this.personalService.getOne(id);
       return res.status(HttpStatus.OK).json(person);
     } catch (err) {
-      return res.status(500).json(err);
+      throw new HttpException(getErrorMessage(err), HttpStatus.FORBIDDEN);
     }
   }
 

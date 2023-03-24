@@ -1,6 +1,6 @@
-import { ICreatePersonalDto } from "../interfaces/ICreatePersonal";
 
-export class CreatePersonalDto implements ICreatePersonalDto{
+
+export class CreatePersonalDto{
   id: number;
   position_name: string;
   subunit_name: string;
