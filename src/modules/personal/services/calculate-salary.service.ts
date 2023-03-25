@@ -5,8 +5,9 @@ import { Repository } from 'typeorm';
 import { IPersonalEntity } from '../interfaces/IPersonal';
 import * as moment from 'moment';
 import { SubunitEntity } from 'src/modules/subunit/subunit.entity';
-import { SalarybonusEntity } from 'src/modules/salary_bonuses/salary-bonuses.entity';
 import { PositionEntity } from 'src/modules/position/position.entity';
+import { IPositionEntity } from 'src/modules/position/interfaces/IPosition';
+import { ISupervisorSubordinateBonus } from '../interfaces/ISupervisorSubordinateBonus';
 
 @Injectable()
 export class CalculateSalaryService {
@@ -15,8 +16,6 @@ export class CalculateSalaryService {
     private personalRepository: Repository<PersonalEntity>,
     @InjectRepository(SubunitEntity)
     private subunitRepository: Repository<SubunitEntity>,
-    @InjectRepository(SalarybonusEntity)
-    private salarybonusRepository: Repository<SalarybonusEntity>,
     @InjectRepository(PositionEntity)
     private positionRepository: Repository<PositionEntity>,
   ) {}
@@ -36,7 +35,9 @@ export class CalculateSalaryService {
 
   async calculate(item: IPersonalEntity): Promise<number> {
     if (item.position.supervisor_access) {
-      return await this.calculateSalary(item);
+      const {salaryBonus} = await this.subordinatesBonus(item);
+
+      return await this.calculateSalary(item) + salaryBonus;
     }
     return await this.calculateSalary(item);
   }
@@ -60,20 +61,6 @@ export class CalculateSalaryService {
     return item.salary * (1 + this.toPercents(currentPercentBonus));
   }
 
-  // async calculate(item: IPersonalEntity){
-  //   switch(item.position.name){
-  //     case 'Employee':
-  //       return item.salary + (item.salary * (this.salarybonus.employee.percentsPerYear * 0.01 * this.fullYearsOfWork(item)));
-  //     case 'Manager':
-  //       const count = await this.subordinatesbonus(item);
-  //       console.log(count);
-  //       return item.salary + (item.salary * (this.salarybonus.manager.percentsPerYear * 0.01 * this.fullYearsOfWork(item)))
-  //       + (this.salarybonus.manager.pecentsPerSubordinate * 0.01 * await this.subordinatesbonus(item));
-  //     case 'Sayles':
-  //       break;
-  //   }
-  // }
-
   fullYearsOfWork(item: IPersonalEntity): number {
     const beginDate: number = moment(item.begin_date, 'DD.MM.YYYY')
       .toDate()
@@ -92,26 +79,103 @@ export class CalculateSalaryService {
     return value * 0.01;
   }
 
-  // async subordinatesbonus(item: IPersonalEntity): Promise<number>{
+  async subordinatesBonus(item: IPersonalEntity): Promise<{salaryBonus: number}>{
 
-  //   let counter = 0;
-  //   const arrSalary = []
 
-  //   const subunitHead = await this.subunitRepository.findOne({where: {supervisor_inn: item.physical_face.inn}});
-  //   if(subunitHead){
-  //     const subordinatesArr = await this.personalRepository.find({relations: {
-  //       subunit: true,
-  //       physical_face: true
-  //     }})
-  //     for(const el of subordinatesArr){
-  //       if(el.subunit.id === subunitHead.id && el.physical_face.inn !== subunitHead.supervisor_inn){
-  //         counter++;
-  //         // акамулирующий массив;
-  //         // arrSalary.reduce((acc, cur) => acc + cur,[])
-  //       }
-  //     }
+    const subordinatesLimit = await this.convertSalaryBonusLvl(item);
+    const subordinatePercentBonus = await this.getSubordinatePercentBonus(item);
 
-  //   }
-  //   return counter
-  // }
+
+    const {subordinates, percentFromSalary}  = await this.getSubordinates(item, subordinatePercentBonus)
+
+    let counter = 0;
+    const salaryBonusArr: number[] = [];
+
+    salaryBonusArr.push(percentFromSalary);
+
+    // нужна рекурсия с промисом, переписать 
+ 
+    for await ( const elem of subordinates){
+      if(elem.position.supervisor_access){
+        console.log('here');
+        counter++;
+        for(let i = 0; i < subordinatesLimit; i++){
+          const doesSupervisor = await this.subunitRepository.findOne({relations: {
+            supervisor: true
+          }, where: {
+            supervisor: elem
+          }})
+
+          if(doesSupervisor !== null){
+            const {subordinates, percentFromSalary} = await this.getSubordinates(elem, subordinatePercentBonus)
+            salaryBonusArr.push(percentFromSalary);
+            
+            counter += (subordinates.filter((el) => item.id !== el.id)).length;
+          } 
+        } 
+      } else {
+        counter++;
+      }
+    }
+    const salaryBonus = salaryBonusArr.reduce((acc, cur) => acc + cur, 0);
+
+    console.log(salaryBonus);
+
+    return {salaryBonus};
+  }
+
+
+  async convertSalaryBonusLvl(item: IPersonalEntity): Promise<number>{
+    const salaryBonusLvl = await this.positionRepository.findOne({
+      relations: {
+        salary_bonus: true
+      },
+      where: {
+        id: item.position.id
+      }
+    }).then(({salary_bonus}: IPositionEntity) => salary_bonus.subordinate_lvl);
+
+    switch(salaryBonusLvl){
+      case 'first': 
+        return 0;
+      case 'all':
+        return 1;
+    }
+  }
+
+  async getSubordinates(item: IPersonalEntity, subordinatePercentBonus: number): Promise<ISupervisorSubordinateBonus>{
+    const doesSupervisor = await this.subunitRepository.findOne({relations: {
+      supervisor: true
+    }, where: {
+      supervisor: item
+    }})
+    
+    return await this.personalRepository.find({relations: {
+      physical_face: true,
+      position: true,
+      subunit: true
+    }, where: {subunit: doesSupervisor}})
+    .then(async (elems) => {
+
+      const elemsWithoutSupervisor = elems.filter((el) => item.id !== el.id)
+
+      return {
+        subordinates: elemsWithoutSupervisor,
+        percentFromSalary: elemsWithoutSupervisor.map((el) => el.salary * subordinatePercentBonus * 0.01).reduce((acc, cur) => (acc + cur), 0)
+      }
+    })
+  }
+
+  async getSubordinatePercentBonus(item: IPersonalEntity): Promise<number>{
+    const subordinatePercentBonus = await this.positionRepository.findOne({relations: {
+      salary_bonus: true
+    }, where: {id: item.position.id}})
+
+    return subordinatePercentBonus.salary_bonus.subordinate_percent_bonus;
+  }
 }
+
+
+
+
+

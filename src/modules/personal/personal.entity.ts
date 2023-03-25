@@ -20,7 +20,7 @@ export class PersonalEntity implements IPersonalEntity{
   @Column({type: "integer", default: 500}, )
   salary: number;
 
-  @OneToOne(() => PhysicalFaceEntity)
+  @OneToOne(() => PhysicalFaceEntity, (physical_face) => physical_face.id)
   @JoinColumn()
   physical_face: PhysicalFaceEntity;
 

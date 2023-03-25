@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, Index, ManyToOne, OneToMany} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm";
 import { IPersonalEntity } from "../personal/interfaces/IPersonal";
 import { PersonalEntity } from "../personal/personal.entity";
 import { ISubunitEntity } from "./interfaces/ISubunit";
@@ -12,7 +12,7 @@ export class SubunitEntity implements ISubunitEntity{
   @Column({type: "text", length: 100})
   name: string;
 
-  @ManyToOne(() => PersonalEntity, (person) => person, {
+  @ManyToOne(() => PersonalEntity, (person) => person.id, {
     nullable: true
   })
   supervisor?: IPersonalEntity | null;
@@ -20,8 +20,6 @@ export class SubunitEntity implements ISubunitEntity{
   @Column({type: "integer", nullable: true})
   parent_subunit_id?: number | null;
 
-  @OneToMany(() => PersonalEntity, (person) => person)
-  subordinates: IPersonalEntity[]
 
 }
 

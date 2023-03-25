@@ -9,9 +9,8 @@ export interface ISalarybonus {
 
 export enum Esubordinate_lvl {
   First = 'first',
-  Second = 'second',
-  Third = 'third',
-  Fource = 'fource',
-  Fifth = 'fifth',
   All = 'all',
 }
+
+
+

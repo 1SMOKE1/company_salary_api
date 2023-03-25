@@ -56,7 +56,6 @@ export class SubunitService {
       name,
       supervisor_inn,
       parent_subunit_id,
-      subordinates,
     } = body;
 
     const newSubunitBody: ISubunitEntity = new SubunitEntity();
@@ -73,12 +72,6 @@ export class SubunitService {
       }
     } else {
       newSubunitBody.supervisor = null;
-    }
-
-    if(subordinates){
-      newSubunitBody.subordinates = [...subordinates]
-    } else {
-      newSubunitBody.subordinates = [];
     }
 
     
@@ -104,7 +97,7 @@ export class SubunitService {
 
   async updateOne(id: number, body: UpdateSubunitDto) {
 
-    const { supervisor_inn, parent_subunit_id, subordinates} = body;
+    const { supervisor_inn, parent_subunit_id} = body;
 
     const updatedSubunitBody: ISubunitEntity = new SubunitEntity();
 
@@ -135,10 +128,6 @@ export class SubunitService {
         throw new Error('No subunit with current parent_subunit_id');
       }
     }
-
-    if(subordinates){
-      updatedSubunitBody.subordinates = [...subordinates]
-    } 
 
     return await this.subunitRepository.update(
       { id },
