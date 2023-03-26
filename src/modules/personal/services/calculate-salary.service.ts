@@ -8,6 +8,7 @@ import { SubunitEntity } from 'src/modules/subunit/subunit.entity';
 import { PositionEntity } from 'src/modules/position/position.entity';
 import { IPositionEntity } from 'src/modules/position/interfaces/IPosition';
 import { ISupervisorSubordinateBonus } from '../interfaces/ISupervisorSubordinateBonus';
+import { ISubunitEntity } from 'src/modules/subunit/interfaces/ISubunit';
 
 @Injectable()
 export class CalculateSalaryService {
@@ -33,9 +34,40 @@ export class CalculateSalaryService {
       .then((item) => this.calculate(item));
   }
 
+  async calculateCompanySalary(): Promise<number>{
+    return this.personalRepository
+      .find({
+        relations: {
+          position: true,
+          subunit: true,
+          physical_face: true,
+        }
+      })
+      .then(async (items) => {
+        const personalSalary: number[] = [];
+
+        for await (const item of items) {
+          personalSalary.push(await this.calculate(item))
+        }
+          
+
+
+        return personalSalary.reduce((acc, cur) => (acc + cur), 0)
+      }
+      
+      
+      )
+
+  }
+
   async calculate(item: IPersonalEntity): Promise<number> {
     if (item.position.supervisor_access) {
-      const {salaryBonus} = await this.subordinatesBonus(item);
+
+      const subordinatesBonusLvl: number = await this.convertSubordinateBonusLvl(item);
+
+      const bonusPerSubordinate = await this.getBonusPerSubordinate(item);
+
+      const salaryBonus = await this.subordinatesBonus(subordinatesBonusLvl, item, bonusPerSubordinate);
 
       return await this.calculateSalary(item) + salaryBonus;
     }
@@ -79,53 +111,41 @@ export class CalculateSalaryService {
     return value * 0.01;
   }
 
-  async subordinatesBonus(item: IPersonalEntity): Promise<{salaryBonus: number}>{
-
-
-    const subordinatesLimit = await this.convertSalaryBonusLvl(item);
-    const subordinatePercentBonus = await this.getSubordinatePercentBonus(item);
-
-
-    const {subordinates, percentFromSalary}  = await this.getSubordinates(item, subordinatePercentBonus)
-
-    let counter = 0;
+  async subordinatesBonus(n: number, item: IPersonalEntity, bonusPerSubordinate: number): Promise<number>{
+   
     const salaryBonusArr: number[] = [];
 
-    salaryBonusArr.push(percentFromSalary);
+    const {subordinates, subordinatesSupervisors} = await this.getSubordinates(item);
 
-    // нужна рекурсия с промисом, переписать 
- 
-    for await ( const elem of subordinates){
-      if(elem.position.supervisor_access){
-        console.log('here');
-        counter++;
-        for(let i = 0; i < subordinatesLimit; i++){
-          const doesSupervisor = await this.subunitRepository.findOne({relations: {
-            supervisor: true
-          }, where: {
-            supervisor: elem
-          }})
 
-          if(doesSupervisor !== null){
-            const {subordinates, percentFromSalary} = await this.getSubordinates(elem, subordinatePercentBonus)
-            salaryBonusArr.push(percentFromSalary);
-            
-            counter += (subordinates.filter((el) => item.id !== el.id)).length;
-          } 
-        } 
-      } else {
-        counter++;
-      }
-    }
+    salaryBonusArr.push(this.countBonusToSupervisorSalary(subordinates, bonusPerSubordinate));
+
+    salaryBonusArr.reduce((acc, cur) => (acc + cur), 0);
+
     const salaryBonus = salaryBonusArr.reduce((acc, cur) => acc + cur, 0);
 
-    console.log(salaryBonus);
+    const allSubSubordinates: number[] = [];
 
-    return {salaryBonus};
+
+
+    if(n === 1){
+      return salaryBonus
+    } else {
+      if(subordinatesSupervisors.length !== 0){
+        n += subordinatesSupervisors.length;
+        for await(const elem of subordinatesSupervisors){
+          allSubSubordinates.push(await this.subordinatesBonus(n - 1, elem, bonusPerSubordinate));
+        }
+
+        return salaryBonus + allSubSubordinates.reduce((acc, cur) => (acc + cur),0);
+      } else {
+        return await this.subordinatesBonus(n - 1, item, bonusPerSubordinate)
+      }
+    }
   }
 
 
-  async convertSalaryBonusLvl(item: IPersonalEntity): Promise<number>{
+  async convertSubordinateBonusLvl(item: IPersonalEntity): Promise<number>{
     const salaryBonusLvl = await this.positionRepository.findOne({
       relations: {
         salary_bonus: true
@@ -137,42 +157,55 @@ export class CalculateSalaryService {
 
     switch(salaryBonusLvl){
       case 'first': 
-        return 0;
-      case 'all':
         return 1;
+      case 'all':
+        return 10;
     }
   }
 
-  async getSubordinates(item: IPersonalEntity, subordinatePercentBonus: number): Promise<ISupervisorSubordinateBonus>{
-    const doesSupervisor = await this.subunitRepository.findOne({relations: {
-      supervisor: true
-    }, where: {
-      supervisor: item
-    }})
-    
-    return await this.personalRepository.find({relations: {
+  async getSubordinates(item: IPersonalEntity): Promise<ISupervisorSubordinateBonus>{
+
+    const doesSupervisor = await this.doesSupervisor(item);
+
+    const subordinates = await this.personalRepository.find({relations: {
       physical_face: true,
       position: true,
       subunit: true
     }, where: {subunit: doesSupervisor}})
-    .then(async (elems) => {
+    .then((elems) => elems.filter((el) => item.id !== el.id))
 
-      const elemsWithoutSupervisor = elems.filter((el) => item.id !== el.id)
+    const subordinatesSupervisors = [];
 
-      return {
-        subordinates: elemsWithoutSupervisor,
-        percentFromSalary: elemsWithoutSupervisor.map((el) => el.salary * subordinatePercentBonus * 0.01).reduce((acc, cur) => (acc + cur), 0)
-      }
-    })
+    for await (const elem of subordinates){
+      if(await this.doesSupervisor(elem)){
+        subordinatesSupervisors.push(elem);
+      } 
+    }
+
+    return {subordinates, subordinatesSupervisors}
   }
 
-  async getSubordinatePercentBonus(item: IPersonalEntity): Promise<number>{
+  countBonusToSupervisorSalary(items: IPersonalEntity[], subordinatePercentBonus: number): number{
+    return items.map((el) => el.salary * subordinatePercentBonus * 0.01).reduce((acc, cur) => (acc + cur), 0);
+  }
+
+  async getBonusPerSubordinate(item: IPersonalEntity): Promise<number>{
     const subordinatePercentBonus = await this.positionRepository.findOne({relations: {
       salary_bonus: true
     }, where: {id: item.position.id}})
 
     return subordinatePercentBonus.salary_bonus.subordinate_percent_bonus;
   }
+
+  async doesSupervisor(item: IPersonalEntity): Promise<ISubunitEntity | null>{
+    return await this.subunitRepository.findOne({relations: {
+      supervisor: true
+    }, where: {
+      supervisor: item
+    }})
+  }
+
+  
 }
 
 

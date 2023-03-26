@@ -11,6 +11,18 @@ export class CalculateSalaryController {
     private readonly calculateSalaryService: CalculateSalaryService
   ){}
 
+  @Get()
+  async calculateCompanySalary(
+    @Res() res: Response
+  ){
+    try{
+      const companySalary = await this.calculateSalaryService.calculateCompanySalary();
+      return res.status(HttpStatus.OK).json(companySalary);
+    } catch (err) {
+      throw new HttpException(getErrorMessage(err), HttpStatus.FORBIDDEN);
+    }
+  }
+
   @Get(':id')
   async calculateById(
     @Param('id', ParseIntPipe) id: number,
