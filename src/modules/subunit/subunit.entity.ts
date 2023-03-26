@@ -1,25 +1,28 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-import { ISubunitEntity, TGroupLevel } from "./interfaces/ISubunit";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm";
+import { IPersonalEntity } from "../personal/interfaces/IPersonal";
+import { PersonalEntity } from "../personal/personal.entity";
+import { ISubunitEntity } from "./interfaces/ISubunit";
 
-@Entity()
+@Entity({name: 'subunits'})
 export class SubunitEntity implements ISubunitEntity{
 
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({type: "integer"})
   id: number;
 
-  @Column({type: "character varying", length: 100})
+  @Column({type: "text", length: 100})
   name: string;
 
-  @Column({type: "bigint"})
-  supervisor_id?: number;
+  @ManyToOne(() => PersonalEntity, (person) => person.id, {
+    nullable: true
+  })
+  supervisor?: IPersonalEntity | null;
 
-  @Column({type: "character varying", length: 100})
-  supervisor_name?: string;
+  @Column({type: "integer", nullable: true})
+  parent_subunit_id?: number | null;
 
-  @Column({type: "bigint"})
-  group_id?: number;
-
-  @Column({type: "int"})
-  group_level: TGroupLevel;
 
 }
+
+
+
+

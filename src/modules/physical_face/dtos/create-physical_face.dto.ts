@@ -1,8 +1,8 @@
 import { EGender } from "../interfaces/IPhysicalFace";
-import { IUpdatePhysicalFaceDto } from "../interfaces/IUpdatePhysicalFaceDto";
 
 
-export class UpdatePhysicalFaceDto implements IUpdatePhysicalFaceDto{
+
+export class CreatePhysicalFaceDto{
   id: number;
   name: string;
   inn: number;

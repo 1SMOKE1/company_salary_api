@@ -1,37 +1,33 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne } from 'typeorm';
 import { PhysicalFaceEntity } from '../physical_face/physical_face.entity';
+import { IPositionEntity } from '../position/interfaces/IPosition';
 import { PositionEntity } from '../position/position.entity';
 import { SubunitEntity } from '../subunit/subunit.entity';
 import { IPersonalEntity } from './interfaces/IPersonal';
 
-@Entity()
+@Entity({name: 'personal'})
 export class PersonalEntity implements IPersonalEntity{
 
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({type: "integer"})
   id!: number;
 
-  @Column({type: "character varying", length: 100})
-  name: string;
+  @ManyToOne(() => PositionEntity, ({name}) => name)
+  position: IPositionEntity;
 
-  @OneToOne(() => PositionEntity)
-  @JoinColumn()
-  position: PositionEntity;
-
-  @OneToOne(() => SubunitEntity)
-  @JoinColumn()
+  @ManyToOne(() => SubunitEntity)
   subunit: SubunitEntity;
 
-  @Column({type: "int"})
+  @Column({type: "integer", default: 500}, )
   salary: number;
 
-  @Column({type: "character varying", length: 100})
-  tab_num: string;
-
-  @OneToOne(() => PhysicalFaceEntity)
+  @OneToOne(() => PhysicalFaceEntity, (physical_face) => physical_face.id)
   @JoinColumn()
   physical_face: PhysicalFaceEntity;
 
-  @Column({type: "date"})
+  @Column({type: "text", default: new Date().toLocaleString().split(',')[0]})
   begin_date: Date;
   
 }
+
+
+
