@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm';
-import { EGender, IPhysicalFaceEntity } from './interfaces/IPhysicalFace';
+import { IPhysicalFaceEntity } from './interfaces/IPhysicalFace';
 
 @Entity({name: 'physical_faces'})
 @Index(["inn"], {unique: true})
@@ -21,5 +21,5 @@ export class PhysicalFaceEntity implements IPhysicalFaceEntity{
   public education?: string;
 
   @Column({type: "text", length: 100})
-  public gender: EGender;
+  public gender: string;
 }

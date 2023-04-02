@@ -9,6 +9,8 @@ import { SubunitModule } from '../subunit/subunit.module';
 import { CalculateSalaryService } from './services/calculate-salary.service';
 import { CalculateSalaryController } from './controllers/calculate-salary.controller';
 import { SalarybonusesModule } from '../salary_bonuses/salary-bonuses.module';
+import { PhysicalFaceService } from '../physical_face/services/physical_face.service';
+
 
 @Module({
   imports: [
@@ -18,7 +20,7 @@ import { SalarybonusesModule } from '../salary_bonuses/salary-bonuses.module';
     SalarybonusesModule,
     TypeOrmModule.forFeature([PersonalEntity]),
   ],
-  providers: [PersonalService, CalculateSalaryService],
+  providers: [PersonalService, CalculateSalaryService, PhysicalFaceService],
   controllers: [PersonalController, CalculateSalaryController],
   exports: [TypeOrmModule.forFeature([PersonalEntity])],
 })

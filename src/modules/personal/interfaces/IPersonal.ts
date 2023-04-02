@@ -8,5 +8,5 @@ export interface IPersonalEntity{
   subunit: SubunitEntity,
   salary: number,
   physical_face: PhysicalFaceEntity,
-  begin_date: Date
+  begin_date: Date | string
 }

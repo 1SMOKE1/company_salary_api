@@ -25,7 +25,7 @@ export class PersonalEntity implements IPersonalEntity{
   physical_face: PhysicalFaceEntity;
 
   @Column({type: "text", default: new Date().toLocaleString().split(',')[0]})
-  begin_date: Date;
+  begin_date: Date | string
   
 }
 

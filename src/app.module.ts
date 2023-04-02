@@ -42,6 +42,6 @@ import { SalarybonusEntity } from './modules/salary_bonuses/salary-bonuses.entit
     SalarybonusesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService]
 })
 export class AppModule {}

@@ -4,7 +4,7 @@ export interface ISalarybonus {
   percent_per_year: number;
   limit_on_percent_per_year: number;
   subordinate_percent_bonus?: number;
-  subordinate_lvl?: Esubordinate_lvl;
+  subordinate_lvl?: string | null;
 }
 
 export enum Esubordinate_lvl {

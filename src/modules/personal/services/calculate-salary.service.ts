@@ -22,6 +22,7 @@ export class CalculateSalaryService {
   ) {}
 
   async calculateById(id: number) {
+
     return this.personalRepository
       .findOne({
         relations: {
@@ -49,15 +50,8 @@ export class CalculateSalaryService {
         for await (const item of items) {
           personalSalary.push(await this.calculate(item))
         }
-          
-
-
         return personalSalary.reduce((acc, cur) => (acc + cur), 0)
-      }
-      
-      
-      )
-
+      })
   }
 
   async calculate(item: IPersonalEntity): Promise<number> {
@@ -76,7 +70,7 @@ export class CalculateSalaryService {
 
   async calculateSalary(item: IPersonalEntity): Promise<number> {
 
-    const currentPosition = await this.positionRepository.findOne({relations: {
+    const currentPosition: IPositionEntity = await this.positionRepository.findOne({relations: {
       salary_bonus: true
     }, where: {id: item.position.id}})
 
@@ -91,6 +85,7 @@ export class CalculateSalaryService {
       return item.salary * (1 + this.toPercents(currentPercentLimit));
     }
     return item.salary * (1 + this.toPercents(currentPercentBonus));
+    
   }
 
   fullYearsOfWork(item: IPersonalEntity): number {
@@ -107,9 +102,7 @@ export class CalculateSalaryService {
     return currentDate - beginDate;
   }
 
-  toPercents(value: number): number{
-    return value * 0.01;
-  }
+  
 
   async subordinatesBonus(n: number, item: IPersonalEntity, bonusPerSubordinate: number): Promise<number>{
    
@@ -127,7 +120,6 @@ export class CalculateSalaryService {
     const allSubSubordinates: number[] = [];
 
 
-
     if(n === 1){
       return salaryBonus
     } else {
@@ -136,7 +128,6 @@ export class CalculateSalaryService {
         for await(const elem of subordinatesSupervisors){
           allSubSubordinates.push(await this.subordinatesBonus(n - 1, elem, bonusPerSubordinate));
         }
-
         return salaryBonus + allSubSubordinates.reduce((acc, cur) => (acc + cur),0);
       } else {
         return await this.subordinatesBonus(n - 1, item, bonusPerSubordinate)
@@ -144,6 +135,9 @@ export class CalculateSalaryService {
     }
   }
 
+  toPercents(value: number): number{
+    return value * 0.01;
+  }
 
   async convertSubordinateBonusLvl(item: IPersonalEntity): Promise<number>{
     const salaryBonusLvl = await this.positionRepository.findOne({
