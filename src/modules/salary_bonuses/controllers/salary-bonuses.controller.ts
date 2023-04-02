@@ -7,12 +7,11 @@ import {
   Param,
   ParseIntPipe,
   Body,
-  HttpException,
+  BadRequestException,
   HttpStatus,
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { getErrorMessage } from 'src/utils/getErrorMessage';
 import { CreateSalarybonusDto } from '../dtos/create-salary-bonuces.dto';
 import { UpdateSalarybonusDto } from '../dtos/update-salary-bonuces.dto.ts';
 import { SalarybonusesService } from '../services/salary-bonuses.service';
@@ -27,7 +26,7 @@ export class SalarybonusesController {
       const salarybonus = await this.salarybonusService.getAll();
       return res.status(HttpStatus.OK).json(salarybonus);
     } catch (err) {
-      throw new HttpException(getErrorMessage(err), HttpStatus.CONFLICT);
+      throw new BadRequestException(err);
     }
   }
 
@@ -40,7 +39,7 @@ export class SalarybonusesController {
       const salarybonus = await this.salarybonusService.getOneById(id);
       return res.status(HttpStatus.OK).json(salarybonus);
     } catch (err) {
-      throw new HttpException(getErrorMessage(err), HttpStatus.CONFLICT);
+      throw new BadRequestException(err);
     }
   }
 
@@ -50,12 +49,10 @@ export class SalarybonusesController {
     @Res() res: Response,
   ) {
     try {
-      const newSalarybonus = await this.salarybonusService.createOne(
-        salarybonus,
-      );
+      const newSalarybonus = await this.salarybonusService.createOne(salarybonus);
       return res.status(HttpStatus.OK).json(newSalarybonus);
     } catch (err) {
-      throw new HttpException(getErrorMessage(err), HttpStatus.CONFLICT);
+      throw new BadRequestException(err);
     }
   }
 
@@ -71,7 +68,7 @@ export class SalarybonusesController {
         .then(() => this.salarybonusService.getOneById(id));
       return res.status(HttpStatus.OK).json(updatedSalarybonus);
     } catch (err) {
-      throw new HttpException(getErrorMessage(err), HttpStatus.CONFLICT);
+      throw new BadRequestException(err);
     }
   }
 
@@ -82,7 +79,7 @@ export class SalarybonusesController {
         .status(HttpStatus.OK)
         .json(await this.salarybonusService.deleteOne(id));
     } catch (err) {
-      throw new HttpException(getErrorMessage(err), HttpStatus.CONFLICT);
+      throw new BadRequestException(err);
     }
   }
 }

@@ -1,0 +1,219 @@
+[
+  {
+      "id": 2,
+      "salary": 1200,
+      "begin_date": "19.03.2014",
+      "physical_face": {
+          "id": 1,
+          "name": "Kate",
+          "inn": 133241231,
+          "birthday": "01.18.2001",
+          "education": "NTU",
+          "gender": "female"
+      },
+      "subunit": {
+          "id": 1,
+          "name": "subunit 1",
+          "parent_subunit_id": null
+      },
+      "position": {
+          "id": 2,
+          "name": "Manager",
+          "supervisor_access": 1,
+          "salary_bonus": {
+            "id": 2,
+            "name": "Manager",
+            "percent_per_year": 5,
+            "limit_on_percent_per_year": 40,
+            "subordinate_percent_bonus": 0.5,
+            "subordinate_lvl": "all"
+          }
+       }
+  },
+  {
+      "id": 3,
+      "salary": 600,
+      "begin_date": "19.03.2015",
+      "physical_face": {
+          "id": 2,
+          "name": "Darina",
+          "inn": 1312312311,
+          "birthday": "01.18.2001",
+          "education": "NTU",
+          "gender": "female"
+      },
+      "subunit": {
+          "id": 1,
+          "name": "subunit 1",
+          "parent_subunit_id": null
+      },
+      "position": {
+          "id": 3,
+          "name": "Employee",
+          "supervisor_access": 0,
+          "salary_bonus": {
+            "id": 1,
+            "name": "Employee",
+            "percent_per_year": 3,
+            "limit_on_percent_per_year": 30,
+            "subordinate_percent_bonus": null,
+            "subordinate_lvl": null
+        }
+      }
+  },
+  {
+      "id": 4,
+      "salary": 700,
+      "begin_date": "19.03.2011",
+      "physical_face": {
+          "id": 3,
+          "name": "Anton",
+          "inn": 13123123123,
+          "birthday": "01.18.2001",
+          "education": "UDUNTU",
+          "gender": "male"
+      },
+      "subunit": {
+          "id": 1,
+          "name": "subunit 1",
+          "parent_subunit_id": null
+      },
+      "position": {
+          "id": 3,
+          "name": "Employee",
+          "supervisor_access": 0,
+          "salary_bonus": {
+            "id": 1,
+            "name": "Employee",
+            "percent_per_year": 3,
+            "limit_on_percent_per_year": 30,
+            "subordinate_percent_bonus": null,
+            "subordinate_lvl": null
+        }
+      }
+  },
+  {
+      "id": 5,
+      "salary": 700,
+      "begin_date": "19.03.2009",
+      "physical_face": {
+          "id": 4,
+          "name": "Kirill",
+          "inn": 1313463423,
+          "birthday": "01.18.2001",
+          "education": "UDUNTU",
+          "gender": "male"
+      },
+      "subunit": {
+          "id": 1,
+          "name": "subunit 1",
+          "parent_subunit_id": null
+      },
+      "position": {
+          "id": 3,
+          "name": "Employee",
+          "supervisor_access": 0,
+          "salary_bonus": {
+            "id": 1,
+            "name": "Employee",
+            "percent_per_year": 3,
+            "limit_on_percent_per_year": 30,
+            "subordinate_percent_bonus": null,
+            "subordinate_lvl": null
+        }
+      }
+  },
+  {
+      "id": 6,
+      "salary": 800,
+      "begin_date": "19.03.2008",
+      "physical_face": {
+          "id": 6,
+          "name": "Irina",
+          "inn": 13324213,
+          "birthday": "05.06.2002",
+          "education": "Tamozhenay academy",
+          "gender": "female"
+      },
+      "subunit": {
+          "id": 1,
+          "name": "subunit 1",
+          "parent_subunit_id": null
+      },
+      "position": {
+          "id": 1,
+          "name": "Sales",
+          "supervisor_access": 1,
+          "salary_bonus": {
+            "id": 5,
+            "name": "Sales",
+            "percent_per_year": 1,
+            "limit_on_percent_per_year": 35,
+            "subordinate_percent_bonus": 0.3,
+            "subordinate_lvl": "all"
+        }
+      }
+  },
+  {
+    "id": 9,
+    "salary": 800,
+    "begin_date": "25.03.2023",
+    "physical_face": {
+        "id": 9,
+        "name": "Vladlen",
+        "inn": 1332123168,
+        "birthday": "05.06.1999",
+        "education": "University of building",
+        "gender": "male"
+    },
+    "subunit": {
+        "id": 1,
+        "name": "subunit 1",
+        "parent_subunit_id": null
+    },
+    "position": {
+        "id": 2,
+        "name": "Manager",
+        "supervisor_access": 1,
+        "salary_bonus": {
+            "id": 2,
+            "name": "Manager",
+            "percent_per_year": 5,
+            "limit_on_percent_per_year": 40,
+            "subordinate_percent_bonus": 0.5,
+            "subordinate_lvl": "all"
+          }
+    }
+  },
+  {
+    "id": 10,
+    "salary": 1000,
+    "begin_date": "29.03.2023",
+    "physical_face": {
+        "id": 10,
+        "name": "Arsen",
+        "inn": 2332123168,
+        "birthday": "05.06.1999",
+        "education": "University of building",
+        "gender": "male"
+    },
+    "subunit": {
+        "id": 1,
+        "name": "subunit 1",
+        "parent_subunit_id": null
+    },
+    "position": {
+        "id": 3,
+        "name": "Employee",
+        "supervisor_access": 0,
+        "salary_bonus": {
+            "id": 1,
+            "name": "Employee",
+            "percent_per_year": 3,
+            "limit_on_percent_per_year": 30,
+            "subordinate_percent_bonus": null,
+            "subordinate_lvl": null
+        }
+    }
+   }
+]

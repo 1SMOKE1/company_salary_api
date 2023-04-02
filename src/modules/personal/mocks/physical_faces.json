@@ -1,0 +1,90 @@
+[
+  {
+      "id": 1,
+      "name": "Kate",
+      "inn": 133241231,
+      "birthday": "01.18.2001",
+      "education": "NTU",
+      "gender": "female"
+  },
+  {
+      "id": 2,
+      "name": "Darina",
+      "inn": 1312312311,
+      "birthday": "01.18.2001",
+      "education": "NTU",
+      "gender": "female"
+  },
+  {
+      "id": 3,
+      "name": "Anton",
+      "inn": 13123123123,
+      "birthday": "01.18.2001",
+      "education": "UDUNTU",
+      "gender": "male"
+  },
+  {
+      "id": 4,
+      "name": "Kirill",
+      "inn": 1313463423,
+      "birthday": "01.18.2001",
+      "education": "UDUNTU",
+      "gender": "male"
+  },
+  {
+      "id": 6,
+      "name": "Irina",
+      "inn": 13324213,
+      "birthday": "05.06.2002",
+      "education": "Tamozhenay academy",
+      "gender": "female"
+  },
+  {
+      "id": 7,
+      "name": "Genadiy",
+      "inn": 1332123123,
+      "birthday": "05.06.1998",
+      "education": "University of building",
+      "gender": "male"
+  },
+  {
+      "id": 8,
+      "name": "Yaroslav",
+      "inn": 1332123126,
+      "birthday": "05.06.1998",
+      "education": "University of building",
+      "gender": "male"
+  },
+  {
+      "id": 9,
+      "name": "Vladlen",
+      "inn": 1332123168,
+      "birthday": "05.06.1999",
+      "education": "University of building",
+      "gender": "male"
+  },
+  {
+      "id": 10,
+      "name": "Arsen",
+      "inn": 2332123168,
+      "birthday": "05.06.1999",
+      "education": "University of building",
+      "gender": "male"
+  },
+  {
+      "id": 11,
+      "name": "Artur",
+      "inn": 2432123168,
+      "birthday": "05.06.1999",
+      "education": "University of building",
+      "gender": "male"
+  },
+  {
+      "id": 12,
+      "name": "Andrey",
+      "inn": 2532123168,
+      "birthday": "05.06.1999",
+      "education": "University of building",
+      "gender": "male"
+  }
+]

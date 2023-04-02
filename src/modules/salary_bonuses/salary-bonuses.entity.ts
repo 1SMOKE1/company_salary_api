@@ -19,5 +19,5 @@ export class SalarybonusEntity implements ISalarybonus {
   subordinate_percent_bonus?: number;
 
   @Column({ type: 'text', nullable: true })
-  subordinate_lvl?: Esubordinate_lvl;
+  subordinate_lvl?: Esubordinate_lvl | null;
 }

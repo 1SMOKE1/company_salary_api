@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SubunitEntity } from '../subunit.entity';
 import { Repository } from 'typeorm';
@@ -6,6 +6,7 @@ import { PersonalEntity } from 'src/modules/personal/personal.entity';
 import { ISubunitEntity } from '../interfaces/ISubunit';
 import { CreateSubunitDto } from '../dtos/create-subunit.dto';
 import { UpdateSubunitDto } from '../dtos/update-subunit.dto';
+
 
 @Injectable()
 export class SubunitService {
@@ -27,7 +28,7 @@ export class SubunitService {
         const itemBodies = [];
 
         for await (const item of items) {
-          if (item.supervisor != null)
+          if (item.supervisor !== null)
             itemBodies.push(await this.drawOutData(item));
           else itemBodies.push(item);
         }
@@ -61,15 +62,22 @@ export class SubunitService {
     const newSubunitBody: ISubunitEntity = new SubunitEntity();
 
     if(supervisor_inn){
-      const supervisor = await this.findByInn(supervisor_inn);
-      if(!supervisor.position.supervisor_access){
-        throw new Error('This position don`t have supervisor_access')
+
+      try {
+        const supervisor = await this.findByInn(supervisor_inn);
+        if(!supervisor.position.supervisor_access){
+          throw new HttpException('This position don`t have supervisor_access', HttpStatus.CONFLICT)
+        }
+        if(supervisor){
+          newSubunitBody.supervisor = supervisor;
+        } else {
+          throw new HttpException('No person with current inn', HttpStatus.NOT_FOUND);
+        }
+      } catch (err) {
+        throw new HttpException('No person with current inn', HttpStatus.NOT_FOUND);
       }
-      if(supervisor){
-        newSubunitBody.supervisor = supervisor;
-      } else {
-        throw new Error('No person with current inn')
-      }
+
+     
     } else {
       newSubunitBody.supervisor = null;
     }
@@ -84,7 +92,7 @@ export class SubunitService {
     if(parent_subunit_id){
       const subunit = await this.subunitRepository.findOne({where: {id: parent_subunit_id}})
       if(!subunit){
-        throw new Error('No subunit with current parent_subunit_id')
+        throw new HttpException('No subunit with current parent_subunit_id', HttpStatus.NOT_FOUND)
       }
     }
 
@@ -103,14 +111,17 @@ export class SubunitService {
 
     if (supervisor_inn) {
       const supervisor = await this.findByInn(supervisor_inn);
-      if (!supervisor.position.supervisor_access) {
-        throw new Error('This position don`t have supervisor_access');
-      }
-      if (supervisor) {
-        updatedSubunitBody.supervisor = supervisor;
+
+
+      if (supervisor === null) {
+        throw new HttpException('No person with current inn', HttpStatus.NOT_FOUND);
       } else {
-        throw new Error('No person with current inn');
+        updatedSubunitBody.supervisor = supervisor;
       }
+      if (!supervisor.position.supervisor_access) {
+        throw new HttpException('This position don`t have supervisor_access', HttpStatus.NOT_ACCEPTABLE)
+      }
+      
     }
     if (supervisor_inn === null) {
       updatedSubunitBody.supervisor = null;
@@ -118,14 +129,14 @@ export class SubunitService {
 
     if (parent_subunit_id) {
       if (id === parent_subunit_id) {
-        throw new Error('Subunit can`t be under itself');
+        throw new HttpException('Subunit can`t be under itself', HttpStatus.CONFLICT);
       }
       updatedSubunitBody.parent_subunit_id = parent_subunit_id;
       const subunit = await this.subunitRepository.findOne({
         where: { id: parent_subunit_id },
       });
       if (!subunit) {
-        throw new Error('No subunit with current parent_subunit_id');
+        throw new HttpException('No subunit with current parent_subunit_id', HttpStatus.CONFLICT);
       }
     }
 
@@ -160,7 +171,7 @@ export class SubunitService {
         supervisor
       };
     } catch (err) {
-      throw err;
+      throw new HttpException('No subunit with current parent_subunit_id', HttpStatus.BAD_REQUEST);
     } 
   }
 
@@ -175,8 +186,7 @@ export class SubunitService {
         where: { physical_face: { inn: supervisor_inn } },
       });
     } catch (err) {
-      throw err;
+      throw new HttpException('No person with current inn', HttpStatus.BAD_REQUEST);
     }
-    
   }
 }

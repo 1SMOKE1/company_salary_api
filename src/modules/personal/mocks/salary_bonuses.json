@@ -1,0 +1,26 @@
+[
+  {
+      "id": 1,
+      "name": "Employee",
+      "percent_per_year": 3,
+      "limit_on_percent_per_year": 30,
+      "subordinate_percent_bonus": null,
+      "subordinate_lvl": null
+  },
+  {
+      "id": 2,
+      "name": "Manager",
+      "percent_per_year": 5,
+      "limit_on_percent_per_year": 40,
+      "subordinate_percent_bonus": 0.5,
+      "subordinate_lvl": "first"
+  },
+  {
+      "id": 5,
+      "name": "Sales",
+      "percent_per_year": 1,
+      "limit_on_percent_per_year": 35,
+      "subordinate_percent_bonus": 0.3,
+      "subordinate_lvl": "all"
+  }
+]

@@ -1,0 +1,98 @@
+[
+  {
+      "id": 1,
+      "name": "subunit 1",
+      "parent_subunit_id": null,
+      "supervisor": {
+          "id": 2,
+          "salary": 1200,
+          "begin_date": "19.03.2014",
+          "physical_face": {
+              "id": 1,
+              "name": "Kate",
+              "inn": 133241231,
+              "birthday": "01.18.2001",
+              "education": "NTU",
+              "gender": "female"
+          },
+          "position": {
+              "id": 2,
+              "name": "Manager",
+              "supervisor_access": 1
+          },
+          "subunit": {
+              "id": 1,
+              "name": "subunit 1",
+              "parent_subunit_id": null
+          }
+      }
+  },
+  {
+      "id": 2,
+      "name": "subunit 2",
+      "parent_subunit_id": null,
+      "supervisor": null
+  },
+  {
+      "id": 3,
+      "name": "subunit 3",
+      "parent_subunit_id": null,
+      "supervisor": null
+  },
+  {
+      "id": 4,
+      "name": "subunit 4",
+      "parent_subunit_id": null,
+      "supervisor": {
+          "id": 6,
+          "salary": 800,
+          "begin_date": "19.03.2008",
+          "physical_face": {
+              "id": 6,
+              "name": "Irina",
+              "inn": 13324213,
+              "birthday": "05.06.2002",
+              "education": "Tamozhenay academy",
+              "gender": "female"
+          },
+          "position": {
+              "id": 1,
+              "name": "Sales",
+              "supervisor_access": 1
+          },
+          "subunit": {
+              "id": 1,
+              "name": "subunit 1",
+              "parent_subunit_id": null
+          }
+      }
+  },
+  {
+      "id": 5,
+      "name": "subunit 5",
+      "parent_subunit_id": null,
+      "supervisor": {
+          "id": 9,
+          "salary": 800,
+          "begin_date": "25.03.2023",
+          "physical_face": {
+              "id": 9,
+              "name": "Vladlen",
+              "inn": 1332123168,
+              "birthday": "05.06.1999",
+              "education": "University of building",
+              "gender": "male"
+          },
+          "position": {
+              "id": 2,
+              "name": "Manager",
+              "supervisor_access": 1
+          },
+          "subunit": {
+              "id": 1,
+              "name": "subunit 1",
+              "parent_subunit_id": null
+          }
+      }
+  }
+]

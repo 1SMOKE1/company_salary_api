@@ -4,7 +4,7 @@ export interface IPhysicalFaceEntity{
   inn: number,
   birthday: string,
   education?: string,
-  gender: EGender
+  gender: string
 }
 
 export enum EGender{
