@@ -71,3 +71,19 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+## For Starting application
+
+In terminal use comman: npm ci
+
+Then create .env file in main directory of project (/)
+
+with this content
+
+PORT=<YOUR PORT>
+DB__NAME=<NAME OF DB>
+
+After that run command: 
+npm run start
+or
+npm run start:dev ##(for developing);
