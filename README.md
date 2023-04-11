@@ -80,8 +80,8 @@ Then create .env file in main directory of project (/)
 
 with this content
 
-PORT=<YOUR PORT>
-DB__NAME=<NAME OF DB>
+PORT=\<YOUR PORT\>
+DB__NAME=\<NAME OF DB\>
 
 After that run command: 
 npm run start
