@@ -80,7 +80,7 @@ Then create .env file in main directory of project (/)
 
 with this content
 
-PORT=\<YOUR PORT\>
+PORT=\<YOUR PORT\>\n
 DB__NAME=\<NAME OF DB\>
 
 After that run command: 
