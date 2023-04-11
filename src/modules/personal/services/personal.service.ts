@@ -12,7 +12,6 @@ import { SubunitEntity } from 'src/modules/subunit/subunit.entity';
 import { CreatePersonalDto } from '../dtos/create-personal.dto';
 import { UpdatePersonalDto } from '../dtos/update-personal.dto';
 import * as moment from 'moment';
-import { SubunitService } from 'src/modules/subunit/services/subunit.service';
 import { PhysicalFaceService } from 'src/modules/physical_face/services/physical_face.service';
 
 @Injectable()
@@ -62,87 +61,72 @@ export class PersonalService {
 
     const newPerson: IPersonalEntity = new PersonalEntity();
 
-
-
-    try {
-
-
-      if(physical_face_inn &&
-        !this.physicalFaceService.isValidInn(physical_face_inn)
-        ){
-        throw new HttpException(
-          'Your inn must be 10 numbers', HttpStatus.BAD_REQUEST
-        )
-      }
-      
-
-      const physicalFace: IPhysicalFaceEntity =
-        await this.physicalFaceRepository.findOne({
-          where: { inn: physical_face_inn },
-        });
-
-      const position: IPositionEntity = await this.positionRepository.findOne({
-        where: { name: position_name },
-      });
-
-      const subunit: ISubunitEntity = await this.subunitRepository.findOne({
-        where: { name: subunit_name },
-      });
-
-      if (physicalFace) {
-        if (physicalFace.inn === physical_face_inn) {
-          newPerson.physical_face = physicalFace;
-        }
-      } else {
-        throw new HttpException(
-          `Physical_face with inn: ${physical_face_inn}, doesn\'t exists. Create it or write another one physical_face_inn`,
-          HttpStatus.NOT_FOUND
-        );
-      }
-
-      if (subunit) {
-
-        newPerson.subunit = subunit;
-        
-      } else {
-        throw new HttpException(
-          `Subunit_name with name: ${subunit_name}, doesn\'t exists. Create it or write another one subunit_name`,
-          HttpStatus.NOT_FOUND
-        );
-      }
-
-      if (position) {
-        if (position.name === position_name) {
-          newPerson.position = position;
-        }
-      } else {
-        const positions: IPositionEntity[] =
-          await this.positionRepository.find();
-        const errorMessage = `No such position with name ${position_name}. You could chose from:[${positions.map(
-          ({ name }) => `${name}`,
-        )}]`;
-        throw new HttpException(errorMessage, HttpStatus.NOT_FOUND);
-      }
-
-      if (salary) {
-        newPerson.salary = salary;
-      }
-
-      if (begin_date) {
-        if (!moment(begin_date, 'DD.MM.YYYY', true).isValid()) {
-          throw new HttpException(
-            `This begin_date is incorrect pls use this pattern: 'DD.MM.YYYY' `,
-            HttpStatus.BAD_REQUEST
-          );
-        } else {
-          newPerson.begin_date = begin_date;
-        }
-      }
-
-      return await this.personalRepository.save(newPerson);
-    } catch (err) {
-      throw err;
+    if(physical_face_inn &&!this.physicalFaceService.isValidInn(physical_face_inn)
+      ){
+      throw new HttpException(
+        'Your inn must be 10 numbers', HttpStatus.BAD_REQUEST
+      )
     }
+    
+
+    const physicalFace: IPhysicalFaceEntity =
+      await this.physicalFaceRepository.findOne({
+        where: { inn: physical_face_inn },
+      });
+
+    const position: IPositionEntity = await this.positionRepository.findOne({
+      where: { name: position_name },
+    });
+
+    const subunit: ISubunitEntity = await this.subunitRepository.findOne({
+      where: { name: subunit_name },
+    });
+
+    if (physicalFace && physicalFace.inn === physical_face_inn ) {
+      newPerson.physical_face = physicalFace;
+    } else {
+      throw new HttpException(
+        `Physical_face with inn: ${physical_face_inn}, doesn\'t exists. Create it or write another one physical_face_inn`,
+        HttpStatus.NOT_FOUND
+      );
+    }
+
+    if (subunit) {
+      newPerson.subunit = subunit;
+    } else {
+      throw new HttpException(
+        `Subunit_name with name: ${subunit_name}, doesn\'t exists. Create it or write another one subunit_name`,
+        HttpStatus.NOT_FOUND
+      );
+    }
+
+    if (position && position.name === position_name) {
+      newPerson.position = position;
+    } else {
+      const positions: IPositionEntity[] =
+        await this.positionRepository.find();
+      const errorMessage = `No such position with name ${position_name}. You could chose from:[${positions.map(
+        ({ name }) => `${name}`,
+      )}]`;
+      throw new HttpException(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    if (salary) {
+      newPerson.salary = salary;
+    }
+
+    if (begin_date) {
+      if (!moment(begin_date, 'DD.MM.YYYY', true).isValid()) {
+        throw new HttpException(
+          `This begin_date is incorrect pls use this pattern: 'DD.MM.YYYY' `,
+          HttpStatus.BAD_REQUEST
+        );
+      } else {
+        newPerson.begin_date = begin_date;
+      }
+    }
+
+    return await this.personalRepository.save(newPerson);
   }
 
   async updateOne(id: number, body: UpdatePersonalDto) {
@@ -155,23 +139,17 @@ export class PersonalService {
       begin_date,
     } = body;
 
-    try {      
+       
 
       const updatedPerson = new PersonalEntity();
 
-      if(
-        begin_date &&
-        !this.physicalFaceService.checkAccessOnWork(begin_date.toLocaleString().split(',')[0])
-        ){
+      if(begin_date && !this.physicalFaceService.checkAccessOnWork(begin_date.toLocaleString().split(',')[0])){
           throw new HttpException(
             'You must have 18+ age for get a job', HttpStatus.BAD_REQUEST
           )
         }
 
-      if(
-        physical_face_inn &&
-        !this.physicalFaceService.isValidInn(physical_face_inn)
-        ){
+      if(physical_face_inn && !this.physicalFaceService.isValidInn(physical_face_inn)){
         throw new HttpException(
           'Your inn must be 10 numbers', HttpStatus.BAD_REQUEST
         )
@@ -188,10 +166,8 @@ export class PersonalService {
       const subunit: ISubunitEntity = await this.subunitRepository
         .findOne({ where: { name: subunit_name } })
         
-      if (physicalFace) {
-        if (physicalFace.inn === physical_face_inn) {
-          updatedPerson.physical_face = physicalFace;
-        }
+      if (physicalFace && physicalFace.inn === physical_face_inn) {
+        updatedPerson.physical_face = physicalFace;
       } else {
         throw new HttpException(
           `Physical_face with inn: ${physical_face_inn}, doesn\'t exists. Create it or write another one physical_face_inn`,
@@ -201,7 +177,6 @@ export class PersonalService {
 
       if (subunit) {
         updatedPerson.subunit = subunit;
-
       } else {
         throw new HttpException(
           `Subunit_name with name: ${subunit_name}, doesn\'t exists. Create it or write another one subunit_name`,
@@ -209,11 +184,7 @@ export class PersonalService {
         );
       }
 
-      if (position) {
-        if (position.name === position_name) {
-          updatedPerson.position = position;
-        }
-      } else {
+      if (position === null && position.name !== position_name) {
         const positions: IPositionEntity[] =
           await this.positionRepository.find();
         const errorMessage = `No such position with name ${position_name}. You could chose from:[${positions.map(
@@ -222,20 +193,21 @@ export class PersonalService {
         throw new HttpException(errorMessage, HttpStatus.CONFLICT);
       }
 
+      updatedPerson.position = position;
+
       if (salary) {
         updatedPerson.salary = salary;
       }
 
-      if (begin_date) {
-        if (!moment(begin_date, 'DD.MM.YYYY', true).isValid()) {
-          throw new HttpException(
-            `This begin_date is incorrect pls use this pattern: 'DD.MM.YYYY' `,
-            HttpStatus.BAD_REQUEST
-          );
-        } else {
-          updatedPerson.begin_date = begin_date
-        }
-      }
+      if (begin_date && !moment(begin_date, 'DD.MM.YYYY', true).isValid()) {
+        throw new HttpException(
+          `This begin_date is incorrect pls use this pattern: 'DD.MM.YYYY' `,
+          HttpStatus.BAD_REQUEST
+        );
+      } 
+      
+      updatedPerson.begin_date = begin_date;
+      
 
       return await this.personalRepository.update(
         { id },
@@ -243,24 +215,20 @@ export class PersonalService {
           ...updatedPerson
         },
       );
-    } catch (err) {
-      throw err;
-    }
+    
   }
 
   async deleteOne(id: number) {
-    try {
-      const currentSubunit = await this.personalRepository.findOne({where: {id}})
-      .then(({id}) => this.subunitRepository.findOne({where: {id}}))
-      if(currentSubunit){
-        throw new HttpException(
-          `Set to null supervisor_id in subunit table by id: ${currentSubunit.id}, for fire this person. Because he is supervisor`,
-          HttpStatus.CONFLICT
-        )
-      }
-      return await this.personalRepository.delete({ id });
-    } catch (err) {
-      throw err;
+  
+    const currentSubunit = await this.personalRepository.findOne({where: {id}})
+    .then(({id}) => this.subunitRepository.findOne({where: {id}}))
+    if(currentSubunit){
+      throw new HttpException(
+        `Set to null supervisor_id in subunit table by id: ${currentSubunit.id}, for fire this person. Because he is supervisor`,
+        HttpStatus.CONFLICT
+      )
     }
+    return await this.personalRepository.delete({ id });
+    
   }
 }

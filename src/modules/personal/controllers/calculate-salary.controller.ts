@@ -4,8 +4,8 @@ import {
   HttpStatus,
   Param,
   Res,
+  Get, ParseIntPipe
 } from '@nestjs/common';
-import { Get, ParseIntPipe } from '@nestjs/common';
 import { Response } from 'express';
 import { CalculateSalaryService } from '../services/calculate-salary.service';
 

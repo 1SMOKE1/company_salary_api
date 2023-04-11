@@ -113,8 +113,6 @@ export class CalculateSalaryService {
 
     salaryBonusArr.push(this.countBonusToSupervisorSalary(subordinates, bonusPerSubordinate));
 
-    salaryBonusArr.reduce((acc, cur) => (acc + cur), 0);
-
     const salaryBonus = salaryBonusArr.reduce((acc, cur) => acc + cur, 0);
 
     const allSubSubordinates: number[] = [];
